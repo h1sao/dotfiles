@@ -1,0 +1,227 @@
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'Shougo/denite.nvim'
+
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+hook_post_update = '''
+  if dein#util#_is_windows()
+    let cmd = 'tools\\update-dll-mingw'
+  elseif dein#util#_is_cygwin()
+    let cmd = 'make -f make_cygwin.mak'
+  elseif executable('gmake')
+    let cmd = 'gmake'
+  else
+    let cmd = 'make'
+  endif
+  let g:dein#plugin.build = cmd
+'''
+
+[[plugins]]
+repo = 'Shougo/defx.nvim'
+
+# --------------------------------------------
+#  カラーテーマ
+# --------------------------------------------
+[[plugins]]
+repo = 'jacoborus/tender.vim'
+hook_add = '''
+  let g:tender_custom_term_colors = 1
+  augroup my_augroup
+    au VimEnter * nested colorscheme tender
+  augroup END
+'''
+hook_post_update = '''
+  if (has("termguicolors"))
+   set termguicolors
+  endif
+'''
+
+#repo = 'joshdick/onedark.vim'
+
+#repo = 'cocopon/iceberg.vim'
+#hook_add = '''
+#  set background=dark
+#  let g:hybrid_custom_term_colors = 1
+#  augroup my_augroup
+#    au VimEnter * nested colorscheme iceberg
+#  augroup END
+#'''
+
+#repo = 'w0ng/vim-hybrid'
+#hook_add = '''
+#  set background=dark
+#  let g:hybrid_custom_term_colors = 1
+#  augroup my_augroup
+#    au VimEnter * nested colorscheme hybrid
+#  augroup END
+#'''
+
+
+# --------------------------------------------
+#  Setting for NERDTree
+#  ファイラー
+# --------------------------------------------
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+    "nnoremap <C-n> gt
+    "nnoremap <C-p> gT
+    nnoremap <silent><C-e> :NERDTreeToggle<CR>
+    let g:NERDTreeShowBookmarks=1    "----ブックマークを初期表示
+    "autocmd vimenter * NERDTree    "----Vim起動時にNERDTreeを表示
+    let g:NERDTreeDirArrows = 1
+    let NERDTreeWinSize=22
+" let NERDTreeShowHidden = 1
+
+    "vim-nerdtree-syntax-highlight
+    let s:rspec_red = 'FE405F'
+    let s:git_orange = 'F54D27'
+    let g:NERDTreeExactMatchHighlightColor = {} " this line is needed to avoid error
+    let g:NERDTreeExactMatchHighlightColor['.gitignore'] = s:git_orange " sets the color for .gitignore files
+    let g:NERDTreePatternMatchHighlightColor = {} " this line is needed to avoid error
+    let g:NERDTreePatternMatchHighlightColor['.*_spec\.rb$'] = s:rspec_red " sets the color for files ending with _spec.rb
+
+" vim-devicons
+    let g:webdevicons_conceal_nerdtree_brackets = 1
+    let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+
+" dir-icons
+    let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+    let g:DevIconsEnableFoldersOpenClose = 1
+    let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
+    let g:DevIconsDefaultFolderOpenSymbol = ''
+" file-icons
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
+    let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
+
+'''
+
+[[plugins]]
+repo = 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+hook_post_update = '''
+  let g:quickrun_config = {'*': {'hook/time/enable': '1'},}
+'''
+
+#[[plugins]]
+#repo = 'Shougo/deoplete.nvim'
+#hook_add = 'let g:deoplete#enable_at_startup = 1'
+#
+#[[plugins]]
+#repo = 'zchee/deoplete-clang'
+#hook_source = '''
+#let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-6.0/lib/libclang-6.0.so.1'
+#let g:deoplete#sources#clang#clang_header = '/usr/bin/clang'
+#let g:syntastic_cpp_compiler_options = ' -std=c++11'
+#'''
+
+[[plugins]]
+repo = "Shougo/deoplete.nvim"
+on_i = 1
+on_event = "InsertCharPre"
+hook_source = """
+  let g:deoplete#enable_at_startup = 1
+  let g:deoplete#auto_complete_delay = 0
+  let g:deoplete#auto_complete_start_length = 1
+  let g:deoplete#enable_camel_case = 0
+  let g:deoplete#enable_ignore_case = 0
+  let g:deoplete#enable_refresh_always = 0
+  let g:deoplete#enable_smart_case = 1
+  let g:deoplete#file#enable_buffer_path = 1
+  let g:deoplete#max_list = 10000
+  set completeopt-=preview
+  " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+"""
+
+[[plugins]]
+repo = "zchee/deoplete-clang"
+on_ft = "cpp"
+depends = "deoplete.nvim"
+hook_add = '''
+let g:deoplete#sources#clang#libclang_path='/usr/lib/llvm-6.0/lib/libclang-6.0.so.1'
+let g:deoplete#sources#clang#clang_header='/usr/include/clang/6.0'
+'''
+on_ft = ['c', 'cpp', 'cmake']
+depends = ['deoplete.nvim']
+
+[[plugins]]
+repo = "rhysd/vim-clang-format"
+on_ft = "cpp"
+hook_add = '''
+function! CPPCodeCleanup()
+  let l:lines='all'
+  let g:clang_format_fallback_style = 'Google'
+  :pyf /usr/share/clang/clang-format-6.0/clang-format.py
+endfunction
+command! CPPCodeCleanup call CPPCodeCleanup()
+autocmd BufWrite *.{cpp} :CPPCodeCleanup
+'''
+
+[[plugins]]
+repo = 'ryanoasis/vim-devicons'
+hoot_add = '''
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:DevIconsEnableFoldersOpenClose = 1
+let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
+let g:DevIconsDefaultFolderOpenSymbol = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
+'''
+
+[[plugins]]
+repo = 'vim-airline/vim-airline-themes'
+
+[[plugins]]
+repo = 'vim-airline/vim-airline'
+depends = ['vim-airline-themes']
+hook_add = '''
+    set laststatus=2
+    set t_Co=256
+    let g:airline_powerline_fonts = 1
+    "let g:airline_theme = 'papercolor'
+    let g:airline_theme = 'tender'
+    " Show branch name
+    let g:airline#extensions#branch#enabled = 1
+    " Show buffer's filename
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#fnamemod = ':t'
+    let g:airline#extensions#wordcount#enabled = 0
+    let g:airline#extensions#default#layout = [['a', 'b', 'c'], ['x', 'y', 'z']]
+    let g:airline_section_c = '%t'
+    let g:airline_section_x = '%{&filetype}'
+    let g:airline_section_z = '%3l:%2v %{airline#extensions#ale#get_warning()} %{airline#extensions#ale#get_error()}'
+    let g:airline#extensions#ale#error_symbol = 'E:'
+    let g:airline#extensions#ale#warning_symbol = 'W:'
+    let g:airline#extensions#default#section_truncate_width = {}
+    " Check whitespace at end of line
+    let g:airline#extensions#whitespace#enabled = 1
+'''
+
+[[plugins]]
+repo ='Townk/vim-autoclose'
+
+[[plugins]]
+repo = 'w0rp/ale'
+
+[[plugins]]
+repo = 'leico/autodate.vim'
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+hook_add = '''
+    command Gst :Gstatus
+    command Gdf :Gdiff
+    command Gbl :Gblame
+'''
+
